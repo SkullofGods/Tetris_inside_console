@@ -1,0 +1,9 @@
+# ninja log v5
+3	1403	1685098431277432935	CMakeFiles/tetris.dir/speedHandler.cpp.o	48d21ef786f7aa7a
+1	446	1685611225148597003	CMakeFiles/tetris.dir/tetraminoes.cpp.o	4865bdef83a0bc81
+2773	3122	1685618538203758995	tetris	4527dca4828bc6e6
+6	83	1685619409092148142	build.ninja	2c15b98bc53ebbd4
+1950	2036	1685570550730876513	CMakeFiles/tetris.dir/States.cpp.o	7d908f12bb1af860
+2	2773	1685618537823948973	CMakeFiles/tetris.dir/main.cpp.o	43d6e171fe910f6f
+1	927	1685611225636841030	CMakeFiles/tetris.dir/IO.cpp.o	60f2fe5bba6b08ce
+5	1949	1685570550626824515	CMakeFiles/tetris.dir/Game.cpp.o	17f202cde9a17d1b
