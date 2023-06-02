@@ -1,12 +1,12 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
-#include "IO.h"
-#include "tetraminoes.h"
+#include "IO.cpp"
+#include "tetraminoes.cpp"
 
 #define CYAN "\e[1;36m"
-#define GREEN "\e[1;32m"
-#define RedBck "\e[41m"
+#define GREEN "\e[1;31m"
+#define RedBck "\e[40m"
 #define CLEAN "\e[0m"
 #define BLACK "\e[1;30m"
 #define WIDTH 14
@@ -37,7 +37,7 @@ int nextBlock[2]={7,7};
 int score;
 int _curX = 5;
 int _curY = 0;
-int timer = 1500;
+int timer = 1000;
 
 
 
@@ -146,20 +146,20 @@ void WriteStatic(){
         }
     }
     CheckForDelete();
-    if(score > 100000)
-        timer = 300;
-    else if(score > 80000)
-        timer = 400;
+    if(score > 80000)
+        timer = 200;
     else if(score > 60000)
-        timer = 600;
+        timer = 300;
     else if(score > 40000)
+        timer = 400;
+    else if(score > 20000)
+        timer = 500;
+    else if (score >10000)
+        timer = 600;
+    else if (score > 5000)
         timer = 800;
-    else if (score >20000)
-        timer = 1000;
-    else if (score > 10000)
-        timer = 1200;
     else
-        timer = 1500;
+        timer = 1000;
 
     if(glassStatic[2][5]!=0||glassStatic[2][6]!=0||glassStatic[2][7]!=0){
         isGameOver = true;
