@@ -25,6 +25,6 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
-            file: /tetris/tetris.bin
+            file: tetris.bin
             tag: ${{ github.ref }}
  
