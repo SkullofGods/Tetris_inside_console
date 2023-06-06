@@ -23,14 +23,7 @@ jobs:
       - name: Generate the artifacts
         uses: skx/github-action-build@master
       - name: Upload the artifacts
-        uses: cycjimmy/semantic-release-action@v2
-        with:
-          semantic_version: 18.0.0
-          extra_plugins: |
-            @semantic-release/changelog@6.0.0
-            @semantic-release/git@10.0.0
-            conventional-changelog-conventionalcommits@4.6.3
-            conventional-changelog-eslint@3.0.9
+        uses: release-drafter/release-drafter@v5
         env:
-          GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
+          GITHUB_TOKEN: $
 
