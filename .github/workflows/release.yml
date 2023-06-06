@@ -23,29 +23,14 @@ jobs:
       - name: Generate the artifacts
         uses: skx/github-action-build@master
       - name: Upload the artifacts
-        uses: amannn/action-semantic-pull-request@v3.4.6
-        env:
-          GITHUB_TOKEN: ${{ secrets.TERRAFORM_YANDEX_COMPUTE_TOKEN }}
+        uses: cycjimmy/semantic-release-action@v2
         with:
-          # Configure which types are allowed.
-          # Default: https://github.com/commitizen/conventional-commit-types
-          types: |
-            breaking
-            chore
-            ci
-            docs
-            feat
-            fix
-            refactor
-            security
-            style
-            test
-          requireScope: false
-          subjectPattern: ^(?![A-Z]).+$
-          subjectPatternError: |
-            The subject "{subject}" found in the pull request title "{title}"
-            didn't match the configured pattern. Please ensure that the subject
-            doesn't start with an uppercase character.
-          wip: true
-          validateSingleCommit: false
+          semantic_version: 18.0.0
+          extra_plugins: |
+            @semantic-release/changelog@6.0.0
+            @semantic-release/git@10.0.0
+            conventional-changelog-conventionalcommits@4.6.3
+            conventional-changelog-eslint@3.0.9
+        env:
+          GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
 
