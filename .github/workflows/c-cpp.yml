@@ -20,7 +20,6 @@ jobs:
     - name: install
       run: g++ -pthread main.cpp -o tetris.out
     
-  jobs:
   integration-test:
     runs-on: ubuntu-latest
     permissions:
