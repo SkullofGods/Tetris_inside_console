@@ -15,6 +15,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install
-      run: g++ -pthreads main.cpp -o tetris.out
+      run: g++ -pthread main.cpp -o tetris.out
     
   
