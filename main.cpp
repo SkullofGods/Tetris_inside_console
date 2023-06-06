@@ -4,11 +4,15 @@
 #include "IO.cpp"
 #include "tetraminoes.cpp"
 
-#define CYAN "\e[1;36m"
-#define GREEN "\e[1;31m"
-#define RedBck "\e[40m"
+#define EMPTY "\e[0;37m"
+#define BLOCK "\e[1;36m"
+#define ABLOCK "\e[1;32m"
+#define BBLOCK "\e[1;35m"
+#define CBLOCK "\e[1;33m"
+#define DBLOCK "\e[1;34m"
+#define WALL "\e[1;31m"
+#define BCKGRND "\e[40m"
 #define CLEAN "\e[0m"
-#define BLACK "\e[1;30m"
 #define WIDTH 14
 #define HEIGHT 22
 #define GAP 2
@@ -37,7 +41,7 @@ int nextBlock[2]={7,7};
 int score;
 int _curX = 5;
 int _curY = 0;
-int timer = 1000;
+int timer = 600;
 
 
 
@@ -66,7 +70,7 @@ void Create(){
     for (int i = 0; i<HEIGHT; i++){
         for (int j = 0; j<WIDTH; j++){
             if(j<GAP||j>WIDTH-3||i==HEIGHT-1){
-                glassStatic[i][j]=6;
+                glassStatic[i][j]=999;
             } else glassStatic[i][j]=0;
         }
     }
@@ -77,16 +81,29 @@ void Output(){
     for (int i=GAP; i < HEIGHT; i++){
         for(int j=0; j<WIDTH; j++) {
             if(glass[i][j]==0){
-                std::cout << BLACK RedBck " ■";
+                std::cout << EMPTY BCKGRND " ■";
             }else if (glass[i][j]==1){
-                std::cout << CYAN RedBck " ■";
-            }else if (glass[i][j]==6){
-                std::cout << GREEN RedBck " ■";
+                std::cout << BLOCK BCKGRND " ■";
+            }else if (glass[i][j]==999){
+                std::cout << WALL BCKGRND " ■";
+            }else if (glass[i][j]==2) {
+                std::cout << ABLOCK BCKGRND " ■";
+            }else if (glass[i][j]==3||glass[i][j]==4){
+                std::cout << BBLOCK BCKGRND " ■";
+            }else if (glass[i][j]==5||glass[i][j]==6){
+                std::cout << CBLOCK BCKGRND " ■";
+            }else if (glass[i][j]==7){
+                std::cout << DBLOCK BCKGRND " ■";
             }
+
         }
-        std::cout << RedBck " " CLEAN << std::endl;
+        std::cout << BCKGRND " " CLEAN << std::endl;
     }
     std::cout << std::endl << "Your Score: " << score << std::endl;
+    if(isGameOver){
+            std::system("clear");
+            std::cout << "Game over" << std::endl << "Your score: " << score;
+        }
 }
 
 void GetNextBlock(){
@@ -100,7 +117,7 @@ bool isAvailibleMove(int curX, int curY, int type, int rot, int moveX, int moveY
     int counter=0;
     for(int y=0; y<5; y++){
         for(int x=0; x<5; x++){
-            if(glassStatic[y+curY+moveY][x+curX+moveX]+pTetra.GetBlock(type,rot,y,x)>1&&glassStatic[y+curY+moveY][x+curX+moveX]+pTetra.GetBlock(type,rot,y,x)!=6){
+            if((glassStatic[y+curY+moveY][x+curX+moveX]+pTetra.GetBlock(type,rot,y,x)>pTetra.GetBlock(type,rot,y,x)&&pTetra.GetBlock(type,rot,y,x)!=0)||glassStatic[y+curY+moveY][x+curX+moveX]+pTetra.GetBlock(type,rot,y,x)>999){
                 counter++;
             }
         }
@@ -115,7 +132,7 @@ bool isAvailibleRot(int curX, int curY, int type, int rot, int dest){
     int counter=0;
     for(int y=0; y<5; y++){
         for(int x=0; x<5; x++){
-            if(glassStatic[curY+y][curX+x]+pTetra.GetBlock(type,rot+dest,y,x)>1&&glassStatic[curY+y][curX+x]+pTetra.GetBlock(type,rot+dest,y,x)!=6){
+            if(glassStatic[curY+y][curX+x]+pTetra.GetBlock(type,rot+dest,y,x)!=pTetra.GetBlock(type,rot+dest,y,x)&&glassStatic[curY+y][curX+x]+pTetra.GetBlock(type,rot+dest,y,x)!=999){
                 counter++;
             }
         }
@@ -146,20 +163,22 @@ void WriteStatic(){
         }
     }
     CheckForDelete();
-    if(score > 80000)
-        timer = 200;
-    else if(score > 60000)
-        timer = 300;
-    else if(score > 40000)
-        timer = 400;
+    if(score > 50000)
+    	timer = 20;
+    else if(score > 30000)
+        timer = 50;
     else if(score > 20000)
+        timer = 100;
+    else if(score > 10000)
+        timer = 200;
+    else if(score > 8000)
+        timer = 300;
+    else if (score >5000)
+        timer = 400;
+    else if (score > 3000)
         timer = 500;
-    else if (score >10000)
-        timer = 600;
-    else if (score > 5000)
-        timer = 800;
     else
-        timer = 1000;
+        timer = 600;
 
     if(glassStatic[2][5]!=0||glassStatic[2][6]!=0||glassStatic[2][7]!=0){
         isGameOver = true;
