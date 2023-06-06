@@ -1,1 +1,1 @@
-g++ -pthreads main.cpp -o tetris.bin
+g++ -pthread main.cpp -o tetris.bin
