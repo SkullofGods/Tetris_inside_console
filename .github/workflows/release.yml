@@ -14,17 +14,6 @@ jobs:
   
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    
-    strategy:
-      matrix:
-        # build and publish in parallel: linux/386, linux/amd64, linux/arm64, windows/386, windows/amd64, darwin/amd64, darwin/arm64
-        goos: [linux, windows, darwin]
-        goarch: ["386", amd64, arm64]
-        exclude:
-          - goarch: "386"
-            goos: darwin
-          - goarch: arm64
-            goos: windows
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -32,13 +21,4 @@ jobs:
         uses: actions/checkout@master
       - name: Generate the artifacts
         uses: skx/github-action-build@master
-      - name: pusher
-        uses: wangyoucao577/go-release-action@v1
-        with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            goos: ${{ matrix.goos }}
-            goarch: ${{ matrix.goarch }}
-            goversion: "https://dl.google.com/go/go1.13.1.linux-amd64.tar.gz"
-            project_path: "./tetris"
-            binary_name: "tetris"
-
+      
