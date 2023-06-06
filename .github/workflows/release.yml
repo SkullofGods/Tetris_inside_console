@@ -21,4 +21,11 @@ jobs:
         uses: actions/checkout@master
       - name: Generate the artifacts
         uses: skx/github-action-build@master
-      
+      - name: pushRelease
+        uses: ncipollo/release-action@v1
+        with:
+            name: ${{ env.GITHUB_REF_NAME }}
+            tag: ${{ env.GITHUB_REF_NAME }}
+            artifacts: "*bin"
+            bodyFile: "body.log"
+            token: ${{ secrets.GITHUB_TOKEN }}
