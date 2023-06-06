@@ -14,7 +14,11 @@ jobs:
   
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        # build and publish in parallel: linux/amd64
+        goos: [linux]
+        goarch: [amd64]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Checkout the repository
@@ -22,8 +26,12 @@ jobs:
       - name: Generate the artifacts
         uses: skx/github-action-build@master
       - name: pushRelease
-        uses: ncipollo/release-action@v1
+        uses: wangyoucao577/go-release-action@v1.16
         with:
-            name: ${{ env.GITHUB_REF_NAME }}
-            artifacts: "*bin"
-            token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          goos: ${{ matrix.goos }}
+          goarch: ${{ matrix.goarch }}
+          project_path: "./tetris"
+          binary_name: "tetris"
+          ldflags: "-s -w"
+          extra_files: LICENSE Readme.md
