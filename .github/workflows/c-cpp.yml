@@ -20,10 +20,32 @@ jobs:
     - name: install
       run: g++ -pthread main.cpp -o tetris.out
     
-    - name: release
-      run: |
+  jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v3
+    - name: Create a Release
+      uses: elgohr/Github-Release-Action@main
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      with:
+        title: ${{ github.sha }}
+
+  release:
+    runs-on: ubuntu-latest
+    needs:
+      - integration-test
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.RELEASE_TOKEN }} # for pushing to protected branch
+      - name: Publish new version
+        run: |
           hub release create -m "AutoRelease" "$(date +%Y%m%d%H%M%S)"
-          git config --global user.email "no_reply@gohr.digital"
+          git config --global user.email "salahtinov.ilua2010.ru@gmail.com"
           git config --global user.name "Release Bot"
           git tag -fa v4 -m "Update v4 tag"
           git push origin v4 --force
