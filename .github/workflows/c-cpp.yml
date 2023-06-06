@@ -17,4 +17,6 @@ jobs:
     - name: install
       run: g++ -pthread main.cpp -o tetris.out
     
+    - name: release
+      run: hub release create -m "AutoRelease" "$(date +%Y%m%d%H%M%S)"
   
