@@ -15,14 +15,14 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/checkout@master
-      - name: Generate
+      - name: Checkout the repository
+        uses: actions/checkout@master
+      - name: Generate the artifacts
         uses: skx/github-action-build@master
-        with:
-          builder: .github/build
-      - uses: actions/checkout@v3
-      - name: install
-        run: g++ -pthread main.cpp -o tetris.out
+      - name: Upload the artifacts
+        uses: skx/github-action-publish-binaries@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/checkout@v2
       - uses: CupOfTea696/gh-action-auto-release@v1.0.2
         with:
