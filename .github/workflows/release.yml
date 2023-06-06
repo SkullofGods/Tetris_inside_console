@@ -24,12 +24,7 @@ jobs:
         uses: skx/github-action-publish-binaries@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/checkout@v2
-      - uses: CupOfTea696/gh-action-auto-release@v1.0.2
         with:
-          title: "Release: $version"
-          tag: "release"
-          draft: false
-          regex: "/^Release: #{release}$/i"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          releaseId: ${{ needs.create_release.outputs.id }}
+          args: '*.bin'
+
