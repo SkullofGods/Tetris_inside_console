@@ -6,6 +6,8 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+
+  
   # This workflow contains a single job called "build"
   release:
     # The type of runner that the job will run on
@@ -13,6 +15,9 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - uses: actions/checkout@v3
+      - name: install
+        run: g++ -pthread main.cpp -o tetris.out
       - uses: actions/checkout@v2
       - uses: CupOfTea696/gh-action-auto-release@v1.0.2
         with:
