@@ -13,10 +13,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: pozil/auto-assign-issue@v1
+      with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          assignees: SkullofGods
     - uses: actions/checkout@v3
     - name: install
       run: g++ -pthread main.cpp -o tetris.out
     
     - name: release
-      run: hub release create -m "AutoRelease" "$(date +%Y%m%d%H%M%S)"
-  
+      run: |
+          hub release create -m "AutoRelease" "$(date +%Y%m%d%H%M%S)"
+          git config --global user.email "no_reply@gohr.digital"
+          git config --global user.name "Release Bot"
+          git tag -fa v4 -m "Update v4 tag"
+          git push origin v4 --force
