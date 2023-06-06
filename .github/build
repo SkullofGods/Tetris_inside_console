@@ -1,1 +1,1 @@
-make
+g++ -pthread /tetris/main.cpp -o tetris.bin
