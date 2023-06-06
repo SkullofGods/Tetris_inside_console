@@ -27,7 +27,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Create a Release
-      uses: elgohr/Github-Release-Action@main
+      uses: SkullofGods/Tetris_inside_console@master
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       with:
