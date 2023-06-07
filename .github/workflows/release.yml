@@ -26,6 +26,7 @@ jobs:
         with:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
             file: tetris.bin
-            tag: Latest release
+            tag: release
             overwrite: true
+            body: this is the latest auto-release
  
