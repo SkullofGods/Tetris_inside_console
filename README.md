@@ -20,6 +20,8 @@ g++ -pthread main.cpp -o tetris.bin  // or clang++ -pthread main.cpp -o tetris.b
 ./tetris.bin
 ```
 
+### > If you want to build it with ~make change in main.cpp included .cpp files to .h files with the same names
+
 # Also
 There are a solution for auto build&release on push git-action what you can use in your projects. 
 
