@@ -26,5 +26,6 @@ jobs:
         with:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
             file: tetris.bin
-            tag: ${{ github.ref }}
+            tag: Latest release
+            overwrite: true
  
