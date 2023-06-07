@@ -26,7 +26,8 @@ g++ -pthread main.cpp -o tetris.bin  // or clang++ -pthread main.cpp -o tetris.b
 There are a solution for auto build&release on push git-action what you can use in your projects. 
 
 ## How to:
-1. Allow actions to use your GITHUB_TOKEN in repository Settings->Actions->General->Workflow permissions->Read and write permissions
+1. Allow actions to use your GITHUB_TOKEN in repository 
+  Settings->Actions->General->Workflow permissions->Read and write permissions
 2. Copy file release.yml from /.github/workflows
 3. Copy file "build" from /.github and rewrite it to your build settings
 
