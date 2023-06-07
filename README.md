@@ -29,6 +29,6 @@ There are a solution for auto build&release on push git-action what you can use 
 3. Copy file "build" from /.github and rewrite it to your build settings
 
 Or just use guides from used repos:
-[skx/github-action-build](https://github.com/skx/github-action-build)
 
-[svenstaro/upload-release-action](https://github.com/svenstaro/upload-release-action)
+  [skx/github-action-build](https://github.com/skx/github-action-build)
+  [svenstaro/upload-release-action](https://github.com/svenstaro/upload-release-action)
