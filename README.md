@@ -3,7 +3,7 @@ This is a console solution for classic brick game written on c++.
 There are realised all the classic mechanics with different colours in ascii symbols.
 
 # Included libs:
-There are no external libs to build this solution, i've used only built in libs:
+There are no external libs to build this solution, i've used only built-in libs:
 ```
 <iostream>
 <chrono>
