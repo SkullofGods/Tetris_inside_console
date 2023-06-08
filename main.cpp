@@ -46,6 +46,7 @@ int timer = 600;
 
 
 int main() {
+    srand((unsigned) time(NULL));
     Create();
     GetNextBlock();
     WriteGlass(_curX, _curY);
@@ -101,14 +102,13 @@ void Output(){
     }
     std::cout << std::endl << "Your Score: " << score << std::endl;
     if(isGameOver){
-            std::system("clear");
-            std::cout << "Game over" << std::endl << "Your score: " << score;
+        GameOver();
         }
 }
 
 void GetNextBlock(){
-    int type = time(NULL)%7;
-    int rot = time(NULL)%4;
+    int type = rand() % 7;
+    int rot = rand() % 4;
     nextBlock[0] = type;
     nextBlock[1] = rot;
 }
@@ -280,7 +280,7 @@ void GameOver(){
     while(true){
         if(isGameOver){
             std::system("clear");
-            std::cout << "Game over" << std::endl << "Your score: " << score;
+            std::cout << "Game over \n Your score: " << score << "\n";
             break;
         }
     }

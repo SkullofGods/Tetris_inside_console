@@ -1,4 +1,7 @@
-/home/skullofgods/Загрузки/clion-2023.1.3/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/skullofgods/Загрузки/clion-2023.1.3/bin/ninja/linux/x64/ninja -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -G Ninja -S /home/skullofgods/CLionProjects/tetris -B /home/skullofgods/CLionProjects/tetris/cmake-build-debug
--- Configuring done
--- Generating done
--- Build files have been written to: /home/skullofgods/CLionProjects/tetris/cmake-build-debug
+/home/skullofgods/Загрузки/clion-2023.1.3/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -G "CodeBlocks - Unix Makefiles" -S /home/skullofgods/CLionProjects/tetris -B /home/skullofgods/CLionProjects/tetris/cmake-build-debug
+CMake Error at CMakeLists.txt:5 (target_compile_options):
+  target_compile_options called with incorrect number of arguments
+
+
+-- Configuring incomplete, errors occurred!
+See also "/home/skullofgods/CLionProjects/tetris/cmake-build-debug/CMakeFiles/CMakeOutput.log".
