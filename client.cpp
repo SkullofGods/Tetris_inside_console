@@ -21,7 +21,7 @@ int main(int argc, char const* argv[])
 
     // Convert IPv4 and IPv6 addresses from text to binary
     // form
-    if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) {
+    if (inet_pton(AF_INET, "10.212.69.144", &serv_addr.sin_addr) <= 0) {
         printf(
                 "\nInvalid address/ Address not supported \n");
         return -1;
@@ -31,12 +31,16 @@ int main(int argc, char const* argv[])
         printf("\nConnection Failed \n");
         return -1;
     }
-    send(client_fd, hello, strlen(hello), 0);
-    printf("Hello message sent\n");
-    valread = read(client_fd, buffer, 1024);
-    printf("%s\n", buffer);
+    while(true){
+    	send(client_fd, hello, strlen(hello), 0);
+    	printf("Hello message sent\n");
+    	valread = read(client_fd, buffer, 1024);
+    	printf("%s\n", buffer);
+    	}
+    
+    
 
     // closing the connected socket
-    close(client_fd);
+    //close(client_fd);
     return 0;
 }
