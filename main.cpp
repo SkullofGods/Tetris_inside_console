@@ -333,7 +333,7 @@ void GameOver() {
             std::system("clear");
             std::cout << CLEAN;
             if(multiplayer)
-                std::cout << "\nGame over \nYour score: " << score[0] << "\n" << "Enemy score:" << enScore[0] << "\n";
+                std::cout << "\nGame over \nYour score: " << score[0] << "\n" << "Enemy score: " << enScore[0] << "\n";
             else
                 std::cout << "Game over \nYour score: " << score[0];
             if (enemy_game_over[0] == 1) {
@@ -341,6 +341,7 @@ void GameOver() {
                 close(new_socket);
                 // closing the listening socket
                 shutdown(server_fd, SHUT_RDWR);
+                break;
             }
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
