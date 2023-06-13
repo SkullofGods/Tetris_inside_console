@@ -4,32 +4,32 @@
 #include "IO.cpp"
 #include "tetraminoes.cpp"
 #include <netinet/in.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
 #include <sys/socket.h>
 #include <unistd.h>
 #define PORT 8080
 
 #define EMPTY "\e[0;37m"
 #define BLOCK "\e[1;36m"
-#define ABLOCK "\e[1;32m"
-#define BBLOCK "\e[1;35m"
-#define CBLOCK "\e[1;33m"
-#define DBLOCK "\e[1;34m"
+#define A_BLOCK "\e[1;32m"
+#define B_BLOCK "\e[1;35m"
+#define C_BLOCK "\e[1;33m"
+#define D_BLOCK "\e[1;34m"
 #define WALL "\e[1;31m"
-#define BCKGRND "\e[40m"
+#define BACKGROUND "\e[40m"
 #define CLEAN "\e[0m"
 #define WIDTH 14
 #define HEIGHT 22
 #define GAP 2
 
-//multiplayer
+//isMultiplayer
 int buffer[22][14];
 int enScore[1];
 int server_fd, new_socket;
 int game_over[1] = {0};
 int enemy_game_over[1] = {0};
+bool isMultiplayer = false;
 
 Tetraminoes pTetra;
 IO mIO;
@@ -40,43 +40,42 @@ void WriteGlass(int x, int y);
 void WriteStatic();
 void CheckForDelete();
 
-bool isAvailibleMove(int curX, int curY, int type, int rot, int moveX, int moveY);
-bool isAvailibleRot(int curX, int curY, int type, int rot, int dest);
+bool isAvailableMove(int curX, int curY, int type, int rot, int moveX, int moveY);
+bool isAvailableRot(int curX, int curY, int type, int rot, int dest);
 
 //threads
 void Input();
 void Fall();
 void GameOver();
 void startServer();
-void Multiplayer();
+
+[[noreturn]] void Multiplayer();
 
 
 bool isGameOver = false;
-bool multiplayer = false;
 int glass[HEIGHT][WIDTH];
 int glassStatic[HEIGHT][WIDTH];
 int nextBlock[2]={7,7};
 int score[1];
-int _curX = 5;
-int _curY = 0;
+int currentX = 5;
+int currentY = 0;
 int timer = 600;
 
 
 
 int main() {
-
-    srand((unsigned) time(NULL));
+    srandom((unsigned) time(nullptr));
     Create();
     GetNextBlock();
-    WriteGlass(_curX, _curY);
+    WriteGlass(currentX, currentY);
     int x = 0;
-    std::cout << "Choose game mode: \n Type 1 for multiplayer or 2 for singleplayer \n";
+    std::cout << "Choose game mode: \n Type 1 for multiplayer or 2 for single-player \n";
     std::cin >> x;
     if(x==1)
-        multiplayer = true;
+        isMultiplayer = true;
     else
-        multiplayer = false;
-   if (multiplayer){
+        isMultiplayer = false;
+   if (isMultiplayer){
        std::cout << "Connecting...";
        startServer();
    }
@@ -113,37 +112,37 @@ void Output() {
     for (int i = GAP; i < HEIGHT; i++) {
         for (int j = 0; j < WIDTH; j++) {
             if (glass[i][j] == 0) {
-                std::cout << EMPTY BCKGRND " ■";
+                std::cout << EMPTY BACKGROUND " ■";
             } else if (glass[i][j] == 1) {
-                std::cout << BLOCK BCKGRND " ■";
+                std::cout << BLOCK BACKGROUND " ■";
             } else if (glass[i][j] == 999) {
-                std::cout << WALL BCKGRND " ■";
+                std::cout << WALL BACKGROUND " ■";
             } else if (glass[i][j] == 2) {
-                std::cout << ABLOCK BCKGRND " ■";
+                std::cout << A_BLOCK BACKGROUND " ■";
             } else if (glass[i][j] == 3 || glass[i][j] == 4) {
-                std::cout << BBLOCK BCKGRND " ■";
+                std::cout << B_BLOCK BACKGROUND " ■";
             } else if (glass[i][j] == 5 || glass[i][j] == 6) {
-                std::cout << CBLOCK BCKGRND " ■";
+                std::cout << C_BLOCK BACKGROUND " ■";
             } else if (glass[i][j] == 7) {
-                std::cout << DBLOCK BCKGRND " ■";
+                std::cout << D_BLOCK BACKGROUND " ■";
             }
 
         }
-        std::cout << BCKGRND " " CLEAN << std::endl;
+        std::cout << BACKGROUND " " CLEAN << std::endl;
     }
     std::cout << std::endl << "Your Score: " << score[0] << std::endl << std::endl;
-    if (multiplayer) {
+    if (isMultiplayer) {
         std::cout << "Enemy Score: " << enScore[0] << std::endl << std::endl;
         for (int i = GAP; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
                 if (i==21 || j<=1 || j >=12){
-                    std::cout << WALL BCKGRND " ■";
+                    std::cout << WALL BACKGROUND " ■";
                 }else if (buffer[i][j] == 0) {
-                    std::cout << EMPTY BCKGRND " ■";
+                    std::cout << EMPTY BACKGROUND " ■";
                 } else if (buffer[i][j] == 9) {
-                    std::cout << ABLOCK BCKGRND " ■";
+                    std::cout << A_BLOCK BACKGROUND " ■";
                 } else {
-                    std::cout << BLOCK BCKGRND " ■";
+                    std::cout << BLOCK BACKGROUND " ■";
                 }
             }
             std::cout << "\n";
@@ -153,17 +152,17 @@ void Output() {
         }
 
     }
-    std::cout << BCKGRND " " CLEAN << std::endl;
+    std::cout << BACKGROUND " " CLEAN << std::endl;
 }
 
 void GetNextBlock(){
-    int type = rand() % 7;
-    int rot = rand() % 4;
+    int type = (int) random() % 7;
+    int rot = (int) random() % 4;
     nextBlock[0] = type;
     nextBlock[1] = rot;
 }
 
-bool isAvailibleMove(int curX, int curY, int type, int rot, int moveX, int moveY){
+bool isAvailableMove(int curX, int curY, int type, int rot, int moveX, int moveY){
     int counter=0;
     for(int y=0; y<5; y++){
         for(int x=0; x<5; x++){
@@ -178,7 +177,7 @@ bool isAvailibleMove(int curX, int curY, int type, int rot, int moveX, int moveY
         return true;
 }
 
-bool isAvailibleRot(int curX, int curY, int type, int rot, int dest){
+bool isAvailableRot(int curX, int curY, int type, int rot, int dest){
     int counter=0;
     for(int y=0; y<5; y++){
         for(int x=0; x<5; x++){
@@ -269,59 +268,58 @@ void CheckForDelete(){
         score[0]+=300;
     else if(linesCounter==4)
         score[0]+=1000;
-    linesCounter = 0;
-};
+}
 
 void Input() {
     while (!isGameOver) {
         switch (mIO.GetKey()) {
             case 1: //Up
                 if (nextBlock[1] == 3) {
-                    if (isAvailibleRot(_curX, _curY, nextBlock[0], nextBlock[1], -3))
+                    if (isAvailableRot(currentX, currentY, nextBlock[0], nextBlock[1], -3))
                         nextBlock[1] = 0;
-                } else if (isAvailibleRot(_curX, _curY, nextBlock[0], nextBlock[1], 1))
+                } else if (isAvailableRot(currentX, currentY, nextBlock[0], nextBlock[1], 1))
                     nextBlock[1]++;
-                WriteGlass(_curX, _curY);
+                WriteGlass(currentX, currentY);
                 Output();
                 break;
             case 2: //Down
-                if (isAvailibleMove(_curX, _curY, nextBlock[0], nextBlock[1], 0, 1)) {
-                    _curY++;
-                    WriteGlass(_curX, _curY);
+                if (isAvailableMove(currentX, currentY, nextBlock[0], nextBlock[1], 0, 1)) {
+                    currentY++;
+                    WriteGlass(currentX, currentY);
                 }
                 Output();
                 break;
             case 3: //Right
-                if (isAvailibleMove(_curX, _curY, nextBlock[0], nextBlock[1], 1, 0)) {
-                    _curX++;
-                    WriteGlass(_curX, _curY);
+                if (isAvailableMove(currentX, currentY, nextBlock[0], nextBlock[1], 1, 0)) {
+                    currentX++;
+                    WriteGlass(currentX, currentY);
                 }
                 Output();
                 break;
             case 4: //Left
-                if (isAvailibleMove(_curX, _curY, nextBlock[0], nextBlock[1], -1, 0)) {
-                    _curX--;
-                    WriteGlass(_curX, _curY);
+                if (isAvailableMove(currentX, currentY, nextBlock[0], nextBlock[1], -1, 0)) {
+                    currentX--;
+                    WriteGlass(currentX, currentY);
                 }
                 Output();
                 break;
             default:
                 continue;
-        };
+        }
     }
 }
 void Fall(){
     while (!isGameOver) {
         std::this_thread::sleep_for(std::chrono::milliseconds(timer));
-        if (!isAvailibleMove(_curX, _curY, nextBlock[0], nextBlock[1], 0, 1)) {
+        if (!isAvailableMove(currentX, currentY, nextBlock[0], nextBlock[1], 0, 1)) {
             WriteStatic();
             GetNextBlock();
-            _curX = 5;
-            _curY = 0;
-            WriteGlass(_curX, _curY);
+            currentX = 5;
+            currentY = 0;
+            WriteGlass(currentX, currentY);
         } else {
-            _curY++;
-            WriteGlass(_curX, _curY);
+            currentY++;
+            WriteGlass(currentX, currentY);
         }
         Output();
     }
@@ -332,7 +330,7 @@ void GameOver() {
         if (isGameOver) {
             std::system("clear");
             std::cout << CLEAN;
-            if(multiplayer)
+            if(isMultiplayer)
                 std::cout << "\nGame over \nYour score: " << score[0] << "\n" << "Enemy score: " << enScore[0] << "\n";
             else
                 std::cout << "\nGame over \nYour score: " << score[0];
@@ -350,11 +348,9 @@ void GameOver() {
 
 void startServer()
 {
-    struct sockaddr_in address;
+    struct sockaddr_in address{};
     int opt = 1;
-    int addrlen = sizeof(address);
-    //char* hello = "Hello from server";
-    //while(read(new_socket, buffer, 1024)== NULL) {
+    int addressLength = sizeof(address);
         // Creating socket file descriptor
         if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
             perror("socket failed");
@@ -363,7 +359,7 @@ void startServer()
 
         // Forcefully attaching socket to the port 8080
         if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
-            perror("setsockopt");
+            perror("port attachment failed");
             exit(EXIT_FAILURE);
         }
         address.sin_family = AF_INET;
@@ -379,11 +375,10 @@ void startServer()
             perror("s"); //printf("%s\n", buffer);r("listen");
             exit(EXIT_FAILURE);
         }
-        if ((new_socket = accept(server_fd, (struct sockaddr *) &address, (socklen_t *) &addrlen)) < 0) {
+        if ((new_socket = accept(server_fd, (struct sockaddr *) &address, (socklen_t *) &addressLength)) < 0) {
             perror("accept");
             exit(EXIT_FAILURE);
         }
-   // }
 
     read(new_socket, buffer, 1232);
     send(new_socket, glass, 1232, 0);
@@ -399,7 +394,7 @@ void startServer()
 
 }
 
-void Multiplayer(){
+[[noreturn]] void Multiplayer(){
     while(true){
         if(isGameOver)
             game_over[0] = 1;
