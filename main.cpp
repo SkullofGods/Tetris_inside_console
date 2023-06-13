@@ -335,7 +335,7 @@ void GameOver() {
             if(multiplayer)
                 std::cout << "\nGame over \nYour score: " << score[0] << "\n" << "Enemy score: " << enScore[0] << "\n";
             else
-                std::cout << "Game over \nYour score: " << score[0];
+                std::cout << "\nGame over \nYour score: " << score[0];
             if (enemy_game_over[0] == 1) {
                 // closing the connected socket
                 close(new_socket);
