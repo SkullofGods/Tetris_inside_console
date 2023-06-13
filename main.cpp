@@ -28,6 +28,8 @@
 int buffer[22][14];
 int enScore[1];
 int server_fd, new_socket;
+int game_over[1] = {0};
+int enemy_game_over[1] = {0};
 
 Tetraminoes pTetra;
 IO mIO;
@@ -134,10 +136,12 @@ void Output() {
         std::cout << "Enemy Score: " << enScore[0] << std::endl << std::endl;
         for (int i = GAP; i < HEIGHT; i++) {
             for (int j = 0; j < WIDTH; j++) {
-                if (buffer[i][j] == 0) {
+                if (i==21 || j<=1 || j >=12){
+                    std::cout << WALL BCKGRND " ■";
+                }else if (buffer[i][j] == 0) {
                     std::cout << EMPTY BCKGRND " ■";
                 } else if (buffer[i][j] == 9) {
-                    std::cout << WALL BCKGRND " ■";
+                    std::cout << ABLOCK BCKGRND " ■";
                 } else {
                     std::cout << BLOCK BCKGRND " ■";
                 }
@@ -228,6 +232,7 @@ void WriteStatic(){
 
     if(glassStatic[2][5]!=0||glassStatic[2][6]!=0||glassStatic[2][7]!=0){
         isGameOver = true;
+        std::cout << CLEAN << std::endl;
     }
 }
 
@@ -322,20 +327,25 @@ void Fall(){
     }
 }
 
-void GameOver(){
-    while(true){
-        if(isGameOver){
+void GameOver() {
+    while (true) {
+        if (isGameOver) {
             std::system("clear");
-            read(new_socket, buffer, 1232);
-            send(new_socket, glassStatic, 1232, 0);
-            read(new_socket, enScore, 4);
-            send(new_socket, score, 4, 0);
-            std::cout << "Game over \n Your score: " << score[0] << "\n"<<"Enemy score:" << enScore[0];
-            break;
+            std::cout << CLEAN;
+            if(multiplayer)
+                std::cout << "\nGame over \nYour score: " << score[0] << "\n" << "Enemy score:" << enScore[0] << "\n";
+            else
+                std::cout << "Game over \nYour score: " << score[0];
+            if (enemy_game_over[0] == 1) {
+                // closing the connected socket
+                close(new_socket);
+                // closing the listening socket
+                shutdown(server_fd, SHUT_RDWR);
+            }
         }
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
 }
-
 
 void startServer()
 {
@@ -385,17 +395,26 @@ void startServer()
     t2.join();
     t1.join();
     t3.join();
-    // closing the connected socket
-    //close(new_socket);
-    // closing the listening socket
-    //shutdown(server_fd, SHUT_RDWR);
+
 }
 
 void Multiplayer(){
     while(true){
+        if(isGameOver)
+            game_over[0] = 1;
+
         read(new_socket, buffer, 1232);
         send(new_socket, glass, 1232, 0);
         read(new_socket, enScore, 4);
         send(new_socket, score, 4, 0);
+        read(new_socket, enemy_game_over, 4);
+        send(new_socket, game_over, 4, 0);
+        if(game_over[0]==1 && enemy_game_over[0]==1){
+            // closing the connected socket
+            close(new_socket);
+            // closing the listening socket
+            shutdown(server_fd, SHUT_RDWR);
+            GameOver();
+        }
     }
 }
